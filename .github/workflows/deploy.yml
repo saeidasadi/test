@@ -1,0 +1,47 @@
+name: 🚀 Deploy Laravel App to VPS
+
+on:
+  push:
+    branches:
+      - master   # Triggers on merge to master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Checkout your code from the repository
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Connect to VPS and run the deployment commands
+      - name: 🔌 SSH into VPS and deploy
+        uses: appleboy/ssh-action@v1.2.0  # A popular, trusted SSH action
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            # This entire block runs on your VPS
+            echo "🚀 Starting deployment on VPS..."
+
+            # Go to your project directory
+            cd ~/code/test
+
+            # Pull the latest code from the master branch
+            echo "📥 Pulling latest code..."
+            git pull origin main
+
+            # Rebuild and restart your Docker containers (without affecting volumes)
+            echo "🐳 Rebuilding and restarting containers..."
+            cd ~/docker
+            docker compose restart larastore
+
+            # Optional: Run Laravel migrations inside the container
+            #echo "🛠️  Running database migrations..."
+            #docker compose exec -w /var/www/vhosts/test php php artisan migrate --force
+
+            # Optional: Clear and rebuild Laravel caches for production
+            docker compose exec -w /var/www/vhosts/test php php artisan optimize
+
+            echo "✅ Deployment finished successfully!"
