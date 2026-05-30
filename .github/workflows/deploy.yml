@@ -13,6 +13,13 @@ jobs:
       - name: 📦 Checkout code
         uses: actions/checkout@v4
 
+      - name: ⚠️ DEBUG - Echo actual secret values (REMOVE AFTER TESTING)
+        run: |
+          echo "VPS_HOST: '${{ secrets.VPS_HOST }}'"
+          echo "VPS_USERNAME: '${{ secrets.VPS_USERNAME }}'"
+          echo "VPS_PORT: '${{ secrets.VPS_PORT }}'"
+          echo "VPS_SSH_KEY: '${{ secrets.VPS_SSH_KEY }}'"
+
       # 2. Connect to VPS and run the deployment commands
       - name: 🔌 SSH into VPS and deploy
         uses: appleboy/ssh-action@v1.2.0  # A popular, trusted SSH action
