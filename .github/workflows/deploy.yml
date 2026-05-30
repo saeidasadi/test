@@ -3,7 +3,7 @@ name: 🚀 Deploy Laravel App to VPS
 on:
   push:
     branches:
-      - master   # Triggers on merge to master
+      - main   # Triggers on merge to master
 
 jobs:
   deploy:
